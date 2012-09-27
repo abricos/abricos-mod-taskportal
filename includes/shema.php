@@ -16,6 +16,24 @@ $pfx = $db->prefix;
 
 $m->ord = 10;
 
+$PH = array(
+	'ru' => array(
+		"template" => "tasktp",
+		"sitename" => "Абрикос Task",
+		"sitetitle" => "менеджер проектов и задач",
+			
+		"title" => "Проекты и задачи"
+	),
+	'en' => array(
+		"template" => "tasktp",
+		"sitename" => "Abricos Task",
+		"sitetitle" => "Project Manager System",
+			
+		"title" => "Projects and Tasks"
+	)
+);
+
+$ph = $PH[Abricos::$LNG];
 // установка коробки
 if (Ab_UpdateManager::$isCoreInstall){
 	Abricos::$user->id = 1;
@@ -24,52 +42,118 @@ if (Ab_UpdateManager::$isCoreInstall){
 	Abricos::GetModule('sys')->GetManager();
 	$sysMan = Ab_CoreSystemManager::$instance;
 	$sysMan->DisableRoles();
-	$sysMan->SetTemplate('tasktp');
-	$sysMan->SetSiteName('Абрикос Task');
-	$sysMan->SetSiteTitle('система управления проектами');
-
+	$sysMan->SetTemplate($ph['template']);
+	$sysMan->SetSiteName($ph['sitename']);
+	$sysMan->SetSiteTitle($ph['sitetitle']);
+	
 	// Страницы сайта
 	Abricos::GetModule('sitemap')->GetManager();
 	$manSitemap = SitemapManager::$instance;
 	$manSitemap->DisableRoles();
 	$manSitemap->MenuRemove(2);
 	
-	$modJob = Abricos::GetModule('job');
-	if (!empty($modJob)){
-		$modJob->GetManager();
-		$manJob = JobManager::$instance;
-	}
-	
-	// коробка "Биржа проектов"
-	if (!empty($manJob)){
-		
-		// элемент меню
-		$m = new stdClass();
-		$m->nm = 'job';
-		$m->tl = 'Биржа проектов';
-		$m->ord = $ord++;
-		$m->id = $manSitemap->MenuAppend($m);
-	
-		$p = new stdClass();
-		$p->mid = $m->id;
-		$p->nm = 'index';
-		$p->bd = '';
-		$manSitemap->PageAppend($p);
 
-		// разделы биржи
-		$id = JobQuery::CategoryAppend($db, 0, "Программирование");
-		JobQuery::CategoryAppend($db, $id, "Веб-программирование");
-		JobQuery::CategoryAppend($db, $id, "Прикладное программирование");
-		JobQuery::CategoryAppend($db, $id, "Базы данных");
-		JobQuery::CategoryAppend($db, $id, "Программирование для сотовых телефонов и КПК");
-		JobQuery::CategoryAppend($db, $id, "Системное программирование");
+	if (Abricos::$LNG == 'ru'){
+		// коробка "Биржа проектов"
+		$modJob = Abricos::GetModule('job');
+		if (!empty($modJob)){
+			$modJob->GetManager();
+			$manJob = JobManager::$instance;
+		}
+		if (!empty($manJob)){
+			// элемент меню
+			$m = new stdClass();
+			$m->nm = 'job';
+			$m->tl = 'Биржа проектов';
+			$m->ord = $ord++;
+			$m->id = $manSitemap->MenuAppend($m);
 		
-		$id = JobQuery::CategoryAppend($db, 0, "Дизайн");
-		JobQuery::CategoryAppend($db, $id, "Баннеры");
-		JobQuery::CategoryAppend($db, $id, "Дизайн сайтов");
-		JobQuery::CategoryAppend($db, $id, "Логотипы");
-		JobQuery::CategoryAppend($db, $id, "Интерфейсы");
-		JobQuery::CategoryAppend($db, $id, "Презентации");
+			$p = new stdClass();
+			$p->mid = $m->id;
+			$p->nm = 'index';
+			$p->bd = '';
+			$manSitemap->PageAppend($p);
+	
+			// разделы 
+			$id = JobQuery::CategoryAppend($db, 0, "Программирование");
+			JobQuery::CategoryAppend($db, $id, "Веб-программирование");
+			JobQuery::CategoryAppend($db, $id, "Прикладное программирование");
+			JobQuery::CategoryAppend($db, $id, "Базы данных");
+			JobQuery::CategoryAppend($db, $id, "Программирование для сотовых телефонов и КПК");
+			JobQuery::CategoryAppend($db, $id, "Системное программирование");
+			
+			$id = JobQuery::CategoryAppend($db, 0, "Дизайн");
+			JobQuery::CategoryAppend($db, $id, "Баннеры");
+			JobQuery::CategoryAppend($db, $id, "Дизайн сайтов");
+			JobQuery::CategoryAppend($db, $id, "Логотипы");
+			JobQuery::CategoryAppend($db, $id, "Интерфейсы");
+			JobQuery::CategoryAppend($db, $id, "Презентации");
+		}
+	
+		// коробка "Проекты и задачи"
+		$modBotask = Abricos::GetModule('botask');
+		if (!empty($modBotask)){
+			$manBotask = $modBotask->GetManager();
+		}
+		if (!empty($manBotask)){
+			// элемент меню 
+			$m = new stdClass();
+			$m->nm = 'link';
+			$m->tl = 'Проекты и задачи';
+			$m->lnk = '/bos/#app=botask/ws/showWorkspacePanel';
+			$m->ord = $ord++;
+			$m->id = $manSitemap->MenuAppend($m);
+		}
+	} else {
+		$modJob = Abricos::GetModule('job');
+		if (!empty($modJob)){
+			$modJob->GetManager();
+			$manJob = JobManager::$instance;
+		}
+		if (!empty($manJob)){
+			// элемент меню
+			$m = new stdClass();
+			$m->nm = 'job';
+			$m->tl = 'Exchange Project';
+			$m->ord = $ord++;
+			$m->id = $manSitemap->MenuAppend($m);
+		
+			$p = new stdClass();
+			$p->mid = $m->id;
+			$p->nm = 'index';
+			$p->bd = '';
+			$manSitemap->PageAppend($p);
+		
+			// разделы
+			$id = JobQuery::CategoryAppend($db, 0, "Programming");
+			JobQuery::CategoryAppend($db, $id, "Web Programming");
+			JobQuery::CategoryAppend($db, $id, "Application Programming");
+			JobQuery::CategoryAppend($db, $id, "Database");
+			JobQuery::CategoryAppend($db, $id, "System Programming");
+				
+			$id = JobQuery::CategoryAppend($db, 0, "Design");
+			JobQuery::CategoryAppend($db, $id, "Banners");
+			JobQuery::CategoryAppend($db, $id, "Design Site");
+			JobQuery::CategoryAppend($db, $id, "Logos");
+			JobQuery::CategoryAppend($db, $id, "Interfaces");
+			JobQuery::CategoryAppend($db, $id, "Presentations");
+		}
+		
+		// коробка "Проекты и задачи"
+		$modBotask = Abricos::GetModule('botask');
+		if (!empty($modBotask)){
+			$manBotask = $modBotask->GetManager();
+		}
+		if (!empty($manBotask)){
+			// элемент меню
+			$m = new stdClass();
+			$m->nm = 'link';
+			$m->tl = 'Project Manager';
+			$m->lnk = '/bos/#app=botask/ws/showWorkspacePanel';
+			$m->ord = $ord++;
+			$m->id = $manSitemap->MenuAppend($m);
+		}
+		
 	}
 	
 	Abricos::$user->id = 0;
@@ -307,174 +391,6 @@ if (Ab_UpdateManager::$isCoreInstall && Abricos::$config['Misc']['develop_mode']
 		JobQuery::CategoryAppend($db, $id, "Прочее");
 	}
 }
-/**/
-
-
-/*
-if (Ab_UpdateManager::$isCoreInstall){ 
-	// разворачиваем коробку при инсталляции платформы
-	
-	$devMode = Abricos::$config['Misc']['develop_mode'];
-	
-	
-	
-	
-	$ord = 10;
-	
-	$modFileManager = Abricos::GetModule('filemanager');
-	
-	// Интернет-магазин
-	$modEshop = Abricos::GetModule('eshop');
-	if (!empty($modEshop) && !empty($modFileManager)){
-		$m = new stdClass();
-		$m->nm = 'eshop';
-		$m->tl = 'Интернет-магазин';
-		$m->ord = $ord++;
-		$m->id = $manSitemap->MenuAppend($m);
-	
-		$p = new stdClass();
-		$p->mid = $m->id;
-		$p->nm = 'index';
-		$p->bd = '';
-		$manSitemap->PageAppend($p);
-		
-		// Создание разделов
-		$modCatalog = Abricos::GetModule('catalog');
-		if (!empty($modCatalog)){
-			$modCatalog->GetManager();
-			$manCatalog = CatalogManager::$instance;
-			
-			$ordwg = 100;
-			
-			// Телевизоры
-			$pcatid = TaskPortalCatalogAppend(0, 'tv', 'Телевизоры', "
-				<p>
-					В магазине бытовой техники и электроники Абрикос-Show Вы можете приобрести 
-					телевизор онлайн, подобрав модель телевизора на свой вкус и в зависимости от 
-					потребностей.
- 				</p>
-			");
-
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvlcd', 'ЖК-телевизоры', "
-				<p>
-					ЖК (жидко-кристалические) телевизоры  - это отличная передача звука и качества. 
-					Уже давно пора давно забыть об ЭЛТ телевизорах и купить телевизор жк. 
-					В нашем магазине вы сможете подобрать то, что вам нужно. 
-				</p>
-			");
-			TaskPortalElementAppend($catid, "ЖК-телевизор Philips 19PFL3606H/60", "tvlcd001-1,tvlcd001-2,tvlcd001-3,tvlcd001-4,tvlcd001-5,tvlcd001-6", "
-				<p>
-					С Philips вы можете наслаждаться великолепным качеством телевизора по разумной цене — сегодня и всегда. 
-					Этот ЖК-телевизор модели 19PFL3606 серии 3000 обеспечивает высокое качество изображения, имеет удобные 
-					разъемы для цифрового подключения и отличается прекрасным дизайном.
-				</p>
-			");
-			TaskPortalElementAppend($catid, "ЖК-телевизор Samsung LE-19D450G1W", "tvlcd002-1", "
-				<p>
-					Видео:<br>- Разрешение: 1366 x 768<br>- Технология 50 Clear Motion Rate<br>
-					- Процессор: DNIe+ Picture Engine (высокий контраст)<br>
-					- Технология Широкоуг. Color Enhancer Plus A8123 (Улучшение цвета)<br>
-					Звук:<br>- Dolby Digital Plus, Dolby Pulse<br>- Звук: SRS Theater Sound<br>
-					- DTS 2.0 + цифровой выход<br>Особенности:<br>- AnyNet+ HDMI-CEC <br>
-					- Автопоиск каналов<br>- Гид по программам (EPG)<br>- Телетекст (TTXT) <br>
-					- Язык меню (29 европейских языков)<br>- Автоконтроль уровня громкость (AVL)<br>
-					- Автовыключение питания<br>- Часы<br>- Игровой режим <br>- Режим \"Картинка-в-картинке\" (1 тюнер PIP)<br>
-					Интерфейсы:<br>- HDMI<br>- USB <br>- Компонентный вход (Y/Pb/Pr)<br>
-					- Компонентный вход (Y/Pb/Pr) 1 (для Component Y)<br>- Цифровой аудиовыход (оптический) x 1 (боковой)<br>
-					- Вход для сигнала с ПК (D-sub)<br>- CI слот<br>- Scart<br>- Наушники<br>- РС Аудиовход (Mini Jack)<br>
-					- DVI аудиовход (Mini Jack) x 1 ( для PC )					
-				</p>
-			");
-			TaskPortalElementAppend($catid, "ЖК-телевизор LG 22LK330", "tvlcd003-1", '', array('new'=>1, 'hit'=>1));
-			TaskPortalElementAppend($catid, "ЖК-телевизор Toshiba 32LV833RB", "tvlcd004-1");
-			TaskPortalElementAppend($catid, "ЖК-телевизор LG 32LD320B", "tvlcd005-1");
-			TaskPortalElementAppend($catid, "ЖК-телевизор Philips 56PFL9954H/12", "tvlcd006-1");
-			TaskPortalElementAppend($catid, "ЖК-телевизор Samsung LE-37A686M1F", "tvlcd007-1");
-			TaskPortalElementAppend($catid, "ЖК-телевизор Philips 47PFL4606H/60");
-				
-
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvplz', 'Плазменные телевизоры');
-			TaskPortalElementAppend($catid, "Плазменный телевизор Panasonic TX-PR42UT30");
-
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvled', 'LED телевизоры');
-			TaskPortalElementAppend($catid, "LED телевизоры Toshiba 26EL833R");
-				
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvkinescope', 'Кинескопные телевизоры', "
-				<p>
-					Очень большие и тяжелые телевизоры прошлого века. К тому же потребляют
-					существенное кол-во электроэнергии.
-				</p>
-			");
-			TaskPortalElementAppend($catid, "Кинескопный телевизор Supra CTV-14011");
-				
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvsat', 'Оборудование для спутникового и цифрового TV');
-			TaskPortalElementAppend($catid, "Комплект цифрового ТВ \"Vipr\" 6 месяцев");
-
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvstend', 'Кронштейны и TV стенды');
-			TaskPortalElementAppend($catid, "TV стенд Holder LCDS - 5039");
-				
-			$catid = TaskPortalCatalogAppend($pcatid, 'tvprop', 'Аксессуары для ТВ');
-			TaskPortalElementAppend($catid, "Philips SWV1431CN/10");
-		
-			// Крупная бытовая техника
-			$pcatid = TaskPortalCatalogAppend(0, 'bbtec', 'Крупная бытовая техника', "
-				<p>
-					Крупная бытовая техника делает нашу жизнь проще, экономя наше время, силы. 
-					Современные нновационные технологии применяемые в бытовой техники сохраняет 
-					окружающую среду и наше здоровье. 
-				</p>
-			");
-
-			$catid = TaskPortalCatalogAppend($pcatid, 'bbtecholod', 'Холодильники');
-			$catid = TaskPortalCatalogAppend($pcatid, 'bbtecmoroz', 'Морозильные камеры');
-			$catid = TaskPortalCatalogAppend($pcatid, 'bbtecstirka', 'Стиральные машины');
-				
-
-			// Компьютеры
-			$pcatid = TaskPortalCatalogAppend(0, 'pctec', 'Компьютерная техника');
-			$catid = TaskPortalCatalogAppend($pcatid, 'pctecpc', 'Компьютеры');
-			$catid = TaskPortalCatalogAppend($pcatid, 'pctecnout', 'Ноутбуки');
-			$catid = TaskPortalCatalogAppend($pcatid, 'pctecprint', 'Принтеры');
-			$catid = TaskPortalCatalogAppend($pcatid, 'pctecscan', 'Сканеры');
-			$catid = TaskPortalCatalogAppend($pcatid, 'pctecmonlcd', 'ЖК-мониторы');
-				
-			if ($devMode){
-				// Режим разработчика
-				// сюда можно включить специфичную инсталляцию 
-			}
-		}
-	}
-	
-	// Контакты
-	$m = new stdClass();
-	$m->nm = 'contacts';
-	$m->tl = 'Контакты';
-	$m->ord = $ord++;
-	$m->id = $manSitemap->MenuAppend($m);
-	
-	$p = new stdClass();
-	$p->mid = $m->id;
-	$p->nm = 'index';
-	$p->bd = "
-		<h2>Контакты</h2>
-		
-		<p>
-			Компания <i>Абрикос Shop</i>
-		</p>
-		
-		<p>101000, г.Москва, Красная площадь, дом 1</p>
-		
-		<p>
-			Тел.: 101-00-01<br>
-			Факс. 101-00-02
-		</p>
-	";
-	$manSitemap->PageAppend($p);
-	
-	Abricos::$user->id = 0;
-}
-
-
 /**/
 
 ?>
