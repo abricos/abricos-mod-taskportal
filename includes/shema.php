@@ -2,7 +2,6 @@
 /**
  * Схема таблиц данного модуля
  * 
- * @version $Id$
  * @package Abricos
  * @subpackage TaskPortal
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -61,13 +60,12 @@ if (Ab_UpdateManager::$isCoreInstall){
 			$manBotask = $modBotask->GetManager();
 		}
 		if (!empty($manBotask)){
-			// элемент меню 
-			$m = new stdClass();
-			$m->nm = 'link';
-			$m->tl = 'Проекты и задачи';
-			$m->lnk = '/bos/#app=botask/ws/showWorkspacePanel';
-			$m->ord = $ord++;
-			$m->id = $manSitemap->MenuAppend($m);
+			// элемент меню
+			$manSitemap->MenuSave(array(
+				'nm' => 'link',
+				'tl' => 'Проекты и задачи',
+				'lnk' => '/bos/#app=botask/ws/showWorkspacePanel'
+			));
 		}
 	} else {
 		// коробка "Проекты и задачи"
@@ -77,12 +75,11 @@ if (Ab_UpdateManager::$isCoreInstall){
 		}
 		if (!empty($manBotask)){
 			// элемент меню
-			$m = new stdClass();
-			$m->nm = 'link';
-			$m->tl = 'Project Manager';
-			$m->lnk = '/bos/#app=botask/ws/showWorkspacePanel';
-			$m->ord = $ord++;
-			$m->id = $manSitemap->MenuAppend($m);
+			$manSitemap->MenuSave(array(
+				'nm' => 'link',
+				'tl' => 'Project Manager',
+				'lnk' => '/bos/#app=botask/ws/showWorkspacePanel'
+			));
 		}
 		
 	}
